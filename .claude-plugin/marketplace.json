@@ -1,0 +1,17 @@
+{
+  "name": "plmcp",
+  "owner": {
+    "name": "zaratxt"
+  },
+  "metadata": {
+    "description": "Plugin Claude Code per collegarsi a uno o piu' server MCP Aras"
+  },
+  "plugins": [
+    {
+      "name": "plmcp",
+      "source": "./plugins/plmcp",
+      "description": "Collega Claude Code a N istanze Aras con server MCP: login OAuth Aras dal browser, client secret cifrato, skill d'uso",
+      "category": "productivity"
+    }
+  ]
+}

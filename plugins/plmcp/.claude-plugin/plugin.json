@@ -1,0 +1,8 @@
+{
+  "name": "plmcp",
+  "description": "Collega Claude Code a N istanze Aras con server MCP: login OAuth Aras dal browser, client secret cifrato, skill d'uso",
+  "author": {
+    "name": "zaratxt"
+  },
+  "keywords": ["aras", "plm", "mcp", "innovator"]
+}
