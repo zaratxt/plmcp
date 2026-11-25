@@ -14,7 +14,7 @@ if (-not $cfg) {
 
 $secretFile = Join-Path (Get-InstanceDir $Instance) 'secret.dat'
 if (-not (Test-Path $secretFile)) {
-    Write-Err "ARAS_SECRET_REQUIRED: client secret mancante per '$Instance'. Chiedi a Claude di configurarlo (skill txt-operations), poi riconnetti il server."
+    Write-Err "ARAS_SECRET_REQUIRED: client secret mancante per '$Instance'. Chiedi a Claude di configurarlo (skill aras-mcp del plugin plmcp), poi riconnetti il server."
     exit 1
 }
 

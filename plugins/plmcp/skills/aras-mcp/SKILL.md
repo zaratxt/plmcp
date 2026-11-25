@@ -1,5 +1,5 @@
 ---
-name: txt-operations
+name: aras-mcp
 description: Collegarsi e usare uno o più server MCP Aras (istanze Aras con endpoint <base>/ai/mcp, autenticati con token OAuth Aras + client secret). Usare quando l'utente vuole aggiungere/elencare/rimuovere un'istanza Aras, fare login su un'istanza, interrogare o modificare dati Aras tramite MCP, quando i tool di un server Aras non sono disponibili, oppure quando il server risponde 401 / "not authenticated" / token scaduto.
 ---
 
@@ -10,7 +10,7 @@ sono in `<SKILL_DIR>\scripts`; quando un'istanza viene aggiunta vengono copiati 
 `%USERPROFILE%\.aras-mcp\bin` (cartella stabile usata dai server registrati). Solo Windows.
 
 Ogni istanza è un server MCP registrato in Claude Code (scope utente) con il nome scelto
-dall'utente, es. `txt-operations`; i suoi tool si chiamano `mcp__<istanza>__<tool>`. Dati
+dall'utente, es. `demo` o `clientex-prod`; i suoi tool si chiamano `mcp__<istanza>__<tool>`. Dati
 dell'istanza in `%USERPROFILE%\.aras-mcp\<istanza>\` (config.json in chiaro; secret.dat e
 token.dat cifrati DPAPI). Il server riceve `Authorization: Bearer <token Aras>` e il client secret
 nell'header `X-Aras-Mcp-Secret`, forniti dall'headersHelper `aras-mcp-token.ps1 -Instance <istanza>`.
@@ -40,7 +40,7 @@ Dopo un aggiornamento del plugin, ricopia gli script nella cartella stabile:
 
 Raccogli i dati in chat, così funziona anche da telefono (Remote Control):
 1. Con `AskUserQuestion` (risposta libera tramite "Other") o in chat chiedi:
-   - nome dell'istanza (lettere, numeri, `-`, `_`; es. `txt-operations`, `clientex-prod`);
+   - nome dell'istanza (lettere, numeri, `-`, `_`; es. `demo`, `clientex-prod`);
    - URL del server MCP, nella forma `https://server/<app>/ai/mcp`;
    - il client secret del server. Avvisa l'utente che passa dalla conversazione (resta nella
      cronologia della sessione); il secret è condiviso per server, non personale.
@@ -108,7 +108,7 @@ password come argomento.
 
 ## 5. Riconnettere il server (lo fa Claude)
 
-Chiama `ToolSearch` con una query che contiene il nome dell'istanza (es. `txt-operations`,
+Chiama `ToolSearch` con una query che contiene il nome dell'istanza (es. `clientex-prod`,
 max_results 20): forza la riconnessione e restituisce i tool `mcp__<istanza>__*`. Verifica con
 il tool `session_status` dell'istanza. Se non si collega, ripeti la sezione 3 per capire cosa manca;
 chiedi all'utente `/mcp` → Reconnect o il riavvio solo se dopo un paio di tentativi non funziona.

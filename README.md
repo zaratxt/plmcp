@@ -1,7 +1,7 @@
 # plmcp – plugin Claude Code per server MCP Aras
 
 Plugin per [Claude Code](https://code.claude.com) che collega Claude a **una o più istanze Aras**
-che espongono un server MCP (endpoint `<base Aras>/ai/mcp`). Include la skill `txt-operations`, che
+che espongono un server MCP (endpoint `<base Aras>/ai/mcp`). Include la skill `aras-mcp`, che
 guida Claude nell'aggiunta delle istanze, nel login Aras e nell'uso dei tool.
 
 > Requisiti: **Windows** (PowerShell 5.1, incluso in Windows), un account Aras su ogni istanza,
@@ -23,7 +23,7 @@ Poi esegui `/reload-plugins` (o riavvia Claude Code).
 
 Chiedi a Claude, ad esempio: *"aggiungi un'istanza Aras"*. Ti chiederà in chat:
 
-1. un nome per l'istanza (es. `txt-operations`);
+1. un nome per l'istanza (es. `clientex-prod`);
 2. l'URL del server MCP;
 3. il client secret del server (è uno per server; passa dalla conversazione e viene salvato
    cifrato sul PC).
