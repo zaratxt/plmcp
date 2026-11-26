@@ -87,8 +87,19 @@ Esito 0 = pronto (non stampare l'output: contiene token e secret). Altrimenti le
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File "<SKILL_DIR>\scripts\aras-login.ps1" -Instance <istanza> -PrintAuthUrl
    ```
-2. Aprilo nel browser dell'utente (Claude in Chrome) e chiedi all'utente di fare login nella pagina
-   Aras. Se è già autenticato su quell'Aras il login può essere immediato.
+2. **Prima di qualsiasi azione nel browser, verifica che Claude in Chrome sia quello di QUESTO PC.**
+   L'estensione può essere collegata a più computer e la sessione può passare da sola al Chrome di
+   un altro PC: un login fatto lì non serve, perché il token va salvato sul PC dove gira Claude Code.
+   - Leggi il nome del PC: `$env:COMPUTERNAME`.
+   - Chiama `list_connected_browsers` e scegli il browser il cui nome coincide con il nome del PC
+     (oppure, se i nomi sono generici, quello con `onThisComputer: true`); poi `select_browser` con
+     il suo deviceId.
+   - Se nessun browser corrisponde con certezza, o ce n'è più di uno, NON avviare l'autenticazione:
+     chiedi all'utente quale browser è su questo PC (nome del PC incluso nella domanda).
+   - Ripeti il controllo (`list_connected_browsers`, campo `inUse`) prima di aprire la pagina di
+     login e prima del `fetch` del passo 3: se il browser in uso non è più quello di questo PC,
+     riselezionalo. Mai aprire la pagina di login o leggere il codice su un PC diverso.
+   Poi apri l'URL in quel browser e chiedi all'utente di fare login nella pagina Aras. Se è già autenticato su quell'Aras il login può essere immediato.
    Da telefono: Chrome è sul PC, quindi l'utente non può digitare lì la password. Prova comunque il
    passo 3 direttamente: se Chrome ha ancora una sessione Aras attiva il codice arriva senza login.
    Altrimenti il login va fatto quando l'utente è al PC.
