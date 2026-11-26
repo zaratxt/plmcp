@@ -127,6 +127,13 @@ max_results 20): forza la riconnessione e restituisce i tool `mcp__<istanza>__*`
 il tool `session_status` dell'istanza. Se non si collega, ripeti la sezione 3 per capire cosa manca;
 chiedi all'utente `/mcp` → Reconnect o il riavvio solo se dopo un paio di tentativi non funziona.
 
+Il `ToolSearch` riconnette solo un server caduto. Se il server è ancora connesso ma con il token
+vecchio (es. dopo un nuovo login `session_status` mostra ancora l'utente precedente), il token viene
+riletto solo a una nuova connessione: chiedi all'utente `/mcp` → `<istanza>` → **Reconnect**, oppure,
+nell'app desktop dove c'è solo quella voce, **Clear authentication** (cancella solo l'autenticazione
+OAuth di Claude Code, non il token del plugin, e ricollega). Mai **Re-authenticate**: avvia l'OAuth di
+Claude Code, che questi server non supportano (errore "Dynamic Client Registration ... 404").
+
 ## 6. Rimuovere un'istanza
 
 Chiedi conferma, poi:
