@@ -77,19 +77,39 @@ function Save-Tokens([string]$n, $resp, [string]$clientId, [string]$fallbackRefr
 }
 
 # Ritorna un access token valido (rinnovandolo se scaduto) o lancia un'eccezione "ARAS_LOGIN_REQUIRED: ..."
-function Get-ArasAccessToken([string]$n) {
-    $cfg = Get-InstanceConfig $n
+function Read-Tokens([string]$n) {
     $tokFile = Join-Path (Get-InstanceDir $n) 'token.dat'
     if (-not (Test-Path $tokFile)) { throw 'ARAS_LOGIN_REQUIRED: nessun token' }
-    $t = Unprotect-Text (Get-Content $tokFile -Raw) | ConvertFrom-Json
+    Unprotect-Text (Get-Content $tokFile -Raw) | ConvertFrom-Json
+}
+
+function Get-ArasAccessToken([string]$n) {
+    $t = Read-Tokens $n
     if ([DateTimeOffset]::UtcNow.ToUnixTimeSeconds() -lt [long]$t.expires_at) { return $t.access_token }
-    if (-not $t.refresh_token) { throw 'ARAS_LOGIN_REQUIRED: token scaduto e senza refresh token' }
+
+    # Il refresh token puo' essere monouso: un solo processo alla volta lo rinnova, gli altri
+    # aspettano e rileggono il token appena salvato invece di riusare quello vecchio.
+    $mutex = New-Object Threading.Mutex($false, "Local\aras-mcp-refresh-$n")
     try {
-        $r = Invoke-RestMethod -Method Post -Uri "$($cfg.oauth_url)/connect/token" -ContentType 'application/x-www-form-urlencoded' -Body @{
-            grant_type = 'refresh_token'; client_id = $t.client_id; refresh_token = $t.refresh_token
+        try { [void]$mutex.WaitOne(30000) } catch [Threading.AbandonedMutexException] { }
+        $t = Read-Tokens $n
+        if ([DateTimeOffset]::UtcNow.ToUnixTimeSeconds() -lt [long]$t.expires_at) { return $t.access_token }
+        if (-not $t.refresh_token) { throw 'ARAS_LOGIN_REQUIRED: token scaduto e senza refresh token' }
+        $cfg = Get-InstanceConfig $n
+        try {
+            $r = Invoke-RestMethod -Method Post -Uri "$($cfg.oauth_url)/connect/token" -ContentType 'application/x-www-form-urlencoded' -Body @{
+                grant_type = 'refresh_token'; client_id = $t.client_id; refresh_token = $t.refresh_token
+            }
+        } catch {
+            $detail = $_.Exception.Message
+            if ($_.ErrorDetails -and $_.ErrorDetails.Message) { $detail = $_.ErrorDetails.Message }
+            throw "ARAS_LOGIN_REQUIRED: refresh fallito ($detail)"
         }
-    } catch { throw "ARAS_LOGIN_REQUIRED: refresh fallito ($($_.Exception.Message))" }
-    (Save-Tokens $n $r $t.client_id $t.refresh_token).access_token
+        (Save-Tokens $n $r $t.client_id $t.refresh_token).access_token
+    } finally {
+        try { $mutex.ReleaseMutex() } catch { }
+        $mutex.Dispose()
+    }
 }
 
 # Prova il server MCP: 'ok', 'unauthorized' o 'error: ...'
