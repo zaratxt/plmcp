@@ -21,6 +21,9 @@ Regole:
   terminale): non chiederle in chat e non digitarle. Non stampare mai token.
 - Il client secret è uno per server (condiviso, non personale): si può chiedere in chat (sezione 2).
   Non ripeterlo nelle risposte, non scriverlo in file in chiaro: passa solo dallo stdin dello script.
+- Accetta l'utente Aras con cui avviene l'autenticazione (anche se diverso da quello atteso, es.
+  una sessione admin già attiva nel browser): non proporre di rifare il login con un altro utente.
+  L'identità la decide l'utente, non Claude.
 - Con più istanze, se la richiesta non dice su quale lavorare, chiedilo. Prima di ogni scrittura
   ripeti istanza e operazione e chiedi conferma.
 
